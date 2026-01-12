@@ -1,0 +1,510 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Sagar ❤️ Prachi | A Question From My Heart</title>
+
+  <!-- Google Font -->
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+
+  <style>
+    :root{
+      --accent:#e63946;
+      --muted:#777;
+      --bg1:#ffdde1;
+      --bg2:#ee9ca7;
+      --card:#fff;
+      --max-width:720px;
+      --radius:22px;
+    }
+
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0;
+      font-family:'Poppins',sans-serif;
+      background:linear-gradient(120deg,var(--bg1),var(--bg2));
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      padding:24px;
+      -webkit-font-smoothing:antialiased;
+      -moz-osx-font-smoothing:grayscale;
+    }
+
+    .container{
+      width:100%;
+      max-width:var(--max-width);
+      background:var(--card);
+      border-radius:var(--radius);
+      padding:40px;
+      text-align:center;
+      box-shadow:0 18px 40px rgba(0,0,0,.18);
+      position:relative;
+      overflow:hidden;
+    }
+
+    header h1{
+      margin:0 0 6px 0;
+      color:var(--accent);
+      font-size:2.4rem;
+      font-weight:600;
+      line-height:1;
+    }
+    header .subtitle{
+      color:var(--muted);
+      font-size:1rem;
+      margin-bottom:18px;
+    }
+
+    .message{
+      color:#444;
+      font-size:1.05rem;
+      line-height:1.6;
+      margin-bottom:18px;
+    }
+
+    .heart{
+      font-size:3rem;
+      display:inline-block;
+      margin:14px 0;
+      will-change:transform;
+      animation:pulse 1.3s infinite;
+    }
+
+    .question{
+      font-size:1.15rem;
+      font-weight:500;
+      margin:16px 0 24px 0;
+      color:#2b2b2b;
+    }
+
+    .controls{
+      display:flex;
+      gap:16px;
+      justify-content:center;
+      flex-wrap:wrap;
+      margin-bottom:8px;
+    }
+
+    button{
+      appearance:none;
+      border:0;
+      padding:12px 28px;
+      border-radius:999px;
+      font-size:1rem;
+      cursor:pointer;
+      transition:transform .18s ease, box-shadow .18s ease;
+      box-shadow: 0 6px 18px rgba(0,0,0,.08);
+    }
+    button:focus{outline:3px solid rgba(230,57,70,.12); outline-offset:3px}
+    button:active{transform:scale(.98)}
+
+    .yes{
+      background:var(--accent);
+      color:#fff;
+    }
+
+    .no{
+      background:#f1f1f1;
+      color:#333;
+    }
+
+    .hint{
+      font-size:.95rem;
+      color:var(--muted);
+      margin-top:8px;
+    }
+
+    .result{
+      display:none;
+      margin-top:18px;
+      animation:fadeIn .4s ease both;
+    }
+    .result h2{color:var(--accent); margin:0; font-size:1.8rem}
+    .result p{color:#333; margin-top:8px; line-height:1.6}
+
+    .teddy{font-size:4rem; margin-top:12px; display:inline-block; animation:dance .7s infinite ease-in-out}
+
+    footer{
+      margin-top:26px;
+      font-size:.9rem;
+      color:#999;
+      display:flex;
+      gap:12px;
+      align-items:center;
+      justify-content:center;
+    }
+
+    .mute{
+      background:transparent;
+      border-radius:8px;
+      padding:6px 8px;
+      cursor:pointer;
+      font-size:1rem;
+    }
+
+    /* Balloons */
+    .balloon{
+      pointer-events:none;
+      position:fixed;
+      bottom:-140px;
+      font-size:2.4rem;
+      transform-origin:center;
+      will-change:transform,opacity;
+      animation:fly linear forwards;
+    }
+
+    @keyframes pulse{
+      0%,100%{transform:scale(1)}
+      50%{transform:scale(1.24)}
+    }
+    @keyframes dance{
+      0%{transform:rotate(-8deg) translateY(0)}
+      50%{transform:rotate(8deg) translateY(-8px)}
+      100%{transform:rotate(-8deg) translateY(0)}
+    }
+    @keyframes fly{
+      from{transform:translateY(0) rotate(0); opacity:1}
+      to{transform:translateY(-1000px) rotate(360deg); opacity:0}
+    }
+    @keyframes fadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+
+    /* Container for confetti canvas */
+    #confetti{
+      position:fixed;
+      left:0;top:0;
+      width:100%;height:100%;
+      pointer-events:none;
+      z-index:999;
+    }
+
+    /* Respect reduced motion */
+    @media (prefers-reduced-motion:reduce){
+      .heart, .teddy, .balloon, .result, button{animation:none; transition:none}
+      .balloon{display:none}
+    }
+
+    /* Responsive typography */
+    @media (max-width:520px){
+      header h1{font-size:1.6rem}
+      .heart{font-size:2.4rem}
+      .teddy{font-size:3rem}
+      .container{padding:28px}
+    }
+  </style>
+</head>
+<body>
+  <canvas id="confetti" aria-hidden="true"></canvas>
+
+  <main class="container" id="mainCard" role="main" aria-labelledby="greeting">
+    <header>
+      <h1 id="greeting">Prachi ❤️</h1>
+      <div class="subtitle" id="fromLine">A message from Sagar</div>
+    </header>
+
+    <div class="message" id="mainMessage" aria-live="polite">
+      Prachi, jab se tum meri life mein aayi ho,<br>
+      meri duniya zyada khubsurat ho gayi hai.<br>
+      Tumhari smile meri har problem ko chhota bana deti hai.
+    </div>
+
+    <div class="heart" aria-hidden="true">💖</div>
+
+    <div class="question" id="ask">Will you be mine forever?</div>
+
+    <div class="controls" id="actionArea">
+      <button type="button" class="yes" id="yesBtn" aria-label="Yes, I will be yours">Yes 💍</button>
+      <button type="button" class="no" id="noBtn" aria-label="No, I will not">No 🙈</button>
+    </div>
+
+    <div class="hint" id="hint">Tip: You can use keyboard to select buttons. Try to click No if you can 😉</div>
+
+    <section class="result" id="result" role="status" aria-live="assertive">
+      <h2 id="resultTitle">I Love You 💕</h2>
+      <p id="resultText">Tumne mujhe duniya ka sabse khush insan bana diya ❤️<br>Main hamesha tumhara saath dunga.</p>
+      <div class="teddy" aria-hidden="true">🧸</div>
+    </section>
+
+    <footer>
+      <span>Made with ❤️ by <span id="fromFooter">Sagar</span></span>
+      <button class="mute" id="muteToggle" aria-pressed="false" title="Mute / Unmute sound">🔊</button>
+    </footer>
+  </main>
+
+  <script>
+    (function(){
+      // Config / state
+      const params = new URLSearchParams(location.search);
+      const fromName = (params.get('from') || 'Sagar').trim() || 'Sagar';
+      const toName = (params.get('to') || 'Prachi').trim() || 'Prachi';
+
+      // Elements
+      const greeting = document.getElementById('greeting');
+      const fromLine = document.getElementById('fromLine');
+      const fromFooter = document.getElementById('fromFooter');
+      const mainMessage = document.getElementById('mainMessage');
+      const yesBtn = document.getElementById('yesBtn');
+      const noBtn = document.getElementById('noBtn');
+      const actionArea = document.getElementById('actionArea');
+      const result = document.getElementById('result');
+      const resultTitle = document.getElementById('resultTitle');
+      const resultText = document.getElementById('resultText');
+      const confettiCanvas = document.getElementById('confetti');
+      const muteToggle = document.getElementById('muteToggle');
+
+      // Update names/titles using params
+      greeting.textContent = toName + " ❤️";
+      fromLine.textContent = "A message from " + fromName;
+      fromFooter.textContent = fromName;
+      document.title = fromName + " ❤️ " + toName + " | A Question From My Heart";
+      resultTitle.textContent = "I Love You " + toName + " 💕";
+      // polite replacement in message
+      mainMessage.innerHTML = `${toName}, jab se tum meri life mein aayi ho,<br>meri duniya zyada khubsurat ho gayi hai.<br>Tumhari smile meri har problem ko chhota bana deti hai.`;
+
+      // Accessibility helpers
+      yesBtn.setAttribute('aria-label', `Yes, ${toName}, I will be yours`);
+      noBtn.setAttribute('aria-label', `No, ${toName}, I will not`);
+
+      // Sound using WebAudio (short chime)
+      let audioCtx = null;
+      let muted = false;
+      function playChime(){
+        if(muted) return;
+        try{
+          if(!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+          const t = audioCtx.currentTime;
+          const o = audioCtx.createOscillator();
+          const g = audioCtx.createGain();
+          o.type = 'sine';
+          o.frequency.setValueAtTime(540, t);
+          g.gain.setValueAtTime(0.0001, t);
+          g.gain.exponentialRampToValueAtTime(0.12, t+0.02);
+          g.gain.exponentialRampToValueAtTime(0.0001, t+0.7);
+          o.connect(g); g.connect(audioCtx.destination);
+          o.start(t); o.stop(t+0.75);
+        }catch(e){
+          // silently fail on locked/autoplay contexts
+        }
+      }
+
+      // Mute toggle
+      muteToggle.addEventListener('click', () => {
+        muted = !muted;
+        muteToggle.textContent = muted ? '🔇' : '🔊';
+        muteToggle.setAttribute('aria-pressed', String(muted));
+      });
+
+      // Confetti implementation (lightweight)
+      const confetti = (function(){
+        const ctx = confettiCanvas.getContext('2d');
+        let width = 0, height = 0, particles = [], raf = null;
+        const colors = ['#ff6b6b','#f7b267','#ffd166','#06d6a0','#4d96ff','#c792ea'];
+        function resize(){
+          width = confettiCanvas.width = innerWidth;
+          height = confettiCanvas.height = innerHeight;
+        }
+        function rand(min,max){ return Math.random()*(max-min)+min }
+        function start(duration=3500){
+          cancel();
+          resize();
+          const count = Math.min(120, Math.floor((width*height)/9000));
+          for(let i=0;i<count;i++){
+            particles.push({
+              x: rand(0,width),
+              y: rand(-height,0),
+              vx: rand(-1.5,1.5),
+              vy: rand(1,3),
+              size: rand(6,12),
+              color: colors[Math.floor(Math.random()*colors.length)],
+              rot: rand(0,360),
+              vr: rand(-6,6),
+              life: rand(0.6,1.2)
+            });
+          }
+          const startTime = performance.now();
+          function frame(now){
+            const elapsed = now - startTime;
+            ctx.clearRect(0,0,width,height);
+            for(let p of particles){
+              p.x += p.vx;
+              p.y += p.vy;
+              p.vy += 0.02; // gravity
+              p.rot += p.vr;
+              ctx.save();
+              ctx.translate(p.x,p.y);
+              ctx.rotate(p.rot*Math.PI/180);
+              ctx.fillStyle = p.color;
+              ctx.fillRect(-p.size/2, -p.size/2, p.size, p.size*0.6);
+              ctx.restore();
+            }
+            // draw and cleanup
+            particles = particles.filter(p => p.y < height + 60);
+            if(elapsed < duration && particles.length){
+              raf = requestAnimationFrame(frame);
+            }else{
+              // final cleanup
+              setTimeout(() => { ctx.clearRect(0,0,width,height); particles = []; }, 200);
+            }
+          }
+          raf = requestAnimationFrame(frame);
+        }
+        function cancel(){
+          if(raf) cancelAnimationFrame(raf);
+          raf = null;
+          particles = [];
+          if(ctx) ctx.clearRect(0,0,confettiCanvas.width, confettiCanvas.height);
+        }
+        window.addEventListener('resize', () => {
+          if(confettiCanvas.width) resize();
+        });
+        return {start, cancel};
+      })();
+
+      // Balloons: create a handful, animate with CSS; removed after timeout
+      function launchBalloons(amount = 18){
+        if(window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+        const docFrag = document.createDocumentFragment();
+        for(let i=0;i<amount;i++){
+          const b = document.createElement('div');
+          b.className = 'balloon';
+          b.textContent = ['🎈','🎈','🎈'][Math.floor(Math.random()*3)];
+          const left = Math.random()*90; // vw
+          b.style.left = left + 'vw';
+          b.style.fontSize = (18 + Math.random()*36) + 'px';
+          const dur = 5 + Math.random()*5;
+          b.style.animationDuration = dur + 's';
+          b.style.opacity = 0.9;
+          docFrag.appendChild(b);
+          // cleanup
+          setTimeout(()=>b.remove(), (dur*1000) + 1200);
+        }
+        document.body.appendChild(docFrag);
+      }
+
+      // "Yes" behavior
+      function acceptLove(){
+        // hide buttons & message
+        actionArea.style.display = 'none';
+        mainMessage.style.display = 'none';
+        // show result
+        result.style.display = 'block';
+        result.setAttribute('aria-hidden','false');
+        // play chime
+        playChime();
+        // confetti + balloons
+        confetti.start(3800);
+        launchBalloons(20);
+        // focus the result for accessibility
+        result.focus?.();
+      }
+
+      // No button evasive behavior
+      let evadeCount = 0;
+      let lastRect = null;
+      const container = document.getElementById('mainCard');
+
+      function getBounds(el){
+        return el.getBoundingClientRect();
+      }
+
+      function moveNoButton(){
+        // don't move if prefers-reduced-motion
+        if(window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+        const contRect = container.getBoundingClientRect();
+        const btnRect = getBounds(noBtn);
+
+        // compute available area inside container where button can be placed
+        const padding = 12;
+        const maxAttempts = 12;
+        let attempt = 0;
+        let newLeft, newTop;
+        do{
+          const spread = Math.min(280 + evadeCount*30, Math.floor(contRect.width*0.6));
+          newLeft = Math.random()*(contRect.width - btnRect.width - padding*2) + padding;
+          newTop = Math.random()*(contRect.height - btnRect.height - padding*2) + padding + 60; // push a bit down
+          attempt++;
+        }while(attempt < maxAttempts && lastRect && Math.hypot(newLeft - (btnRect.left - contRect.left), newTop - (btnRect.top - contRect.top)) < Math.max(60, spread/6));
+
+        // apply transform relative to container
+        noBtn.style.transition = 'transform .32s cubic-bezier(.2,.9,.2,1)';
+        const targetX = Math.round(newLeft - (btnRect.left - contRect.left));
+        const targetY = Math.round(newTop - (btnRect.top - contRect.top));
+        noBtn.style.transform = `translate(${targetX}px, ${targetY}px)`;
+        // store lastRect
+        lastRect = {left:newLeft, top:newTop};
+        evadeCount++;
+        // After some evades, give up and show playful note
+        if(evadeCount > 9){
+          hintText('Okay, okay — you win. Click Yes instead? ❤️');
+        } else {
+          hintText(['So close! Try again 😉','Hehe, catching the wind!','You almost had it!','Try your luck again 😄'][evadeCount % 4]);
+        }
+      }
+
+      function hintText(t){
+        const hint = document.getElementById('hint');
+        hint.textContent = t;
+      }
+
+      // If user actually clicks No (rare if they catch it), show a cheeky message
+      function handleNoClick(){
+        // small playful consequence
+        hintText('Aww, are you sure? Let me try harder ❤️');
+        // momentarily disable the button and move it away
+        noBtn.disabled = true;
+        setTimeout(()=>{ noBtn.disabled = false; moveNoButton(); }, 250);
+      }
+
+      // Keyboard support: Enter on yes, focus/no triggers move
+      yesBtn.addEventListener('click', acceptLove);
+      yesBtn.addEventListener('keydown', (e) => {
+        if(e.key === 'Enter' || e.key === ' ') { e.preventDefault(); acceptLove(); }
+      });
+
+      // Evade on mouseenter or focus
+      noBtn.addEventListener('mouseenter', (e) => moveNoButton());
+      noBtn.addEventListener('focus', (e) => moveNoButton());
+      noBtn.addEventListener('click', (e) => handleNoClick());
+      noBtn.addEventListener('keydown', (e) => {
+        if(e.key === 'Enter' || e.key === ' ') { e.preventDefault(); handleNoClick(); }
+        if(e.key === 'ArrowLeft' || e.key === 'ArrowRight' || e.key === 'ArrowUp' || e.key === 'ArrowDown'){
+          // arrow keys try to nudge but button will evade
+          moveNoButton();
+        }
+      });
+
+      // Accessibility: allow keyboard to switch between buttons using Tab naturally
+      // Set initial focus to Yes
+      yesBtn.focus();
+
+      // If user tab-navigates to No repeatedly, slowly stop evading after many tries
+      // (Already handled by evadeCount threshold)
+
+      // If user reloads/resizes, reset transforms to keep layout sane
+      window.addEventListener('resize', () => {
+        noBtn.style.transition = '';
+        noBtn.style.transform = '';
+        lastRect = null;
+      });
+
+      // Prevent accidental text selection while interacting
+      document.addEventListener('selectstart', (e) => { if(e.target === noBtn) e.preventDefault(); });
+
+      // Clean up if necessary on page hide
+      window.addEventListener('pagehide', () => { confetti.cancel?.(); });
+
+      // Optional: allow pressing "Y" for yes, "N" for no (keyboard shortcuts)
+      window.addEventListener('keydown', (e) => {
+        if(e.target && (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA')) return;
+        if(e.key.toLowerCase() === 'y') { yesBtn.click(); }
+        if(e.key.toLowerCase() === 'n') { noBtn.focus(); moveNoButton(); }
+      });
+
+      // Start: small greeting animation (remove after a bit)
+      setTimeout(()=>{ document.querySelector('.heart')?.classList.add('pop'); }, 300);
+    })();
+  </script>
+</body>
+</html>
